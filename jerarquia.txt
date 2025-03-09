@@ -1,0 +1,7 @@
+Datalyst/
+│── main.py                # Archivo principal que ejecuta la app
+│── interface.py           # Contiene la interfaz Flet
+│── clustering.py          # Contiene la lógica de K-Means
+│── model_handler.py       # Guardar/cargar modelos
+│── data_processing.py     # Funciones para manejar los datos
+│── utils.py               # Funciones auxiliares
