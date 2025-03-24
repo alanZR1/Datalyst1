@@ -12,20 +12,20 @@ class MainApp(ft.Column):
         self.kmeans = None
         self.df = None
 
-        # Contenedor principal para centrar los botones
+        # Centrar los botones
         self.controls = [
             ft.Container(
                 content=ft.Column(
                     [
-                        ft.Text("Selecciona un modo:", size=20, weight="bold"),
+                        ft.Text("Selecciona un modo:", size = 20, weight = "bold"),
                         ft.ElevatedButton("Online", on_click=self.open_online_window),
-                        ft.ElevatedButton("Offline", on_click=self.open_offline_window),
+                        ft.ElevatedButton("Entrenamiento", on_click=self.open_offline_window),
                     ],
-                    alignment=ft.MainAxisAlignment.CENTER,  # Centra los elementos verticalmente
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # Centra los elementos horizontalmente
+                    alignment = ft.MainAxisAlignment.CENTER,  
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER, 
                 ),
-                alignment=ft.alignment.center,  # Centra el contenido del contenedor
-                expand=True,  # Ocupa todo el espacio disponible
+                alignment=ft.alignment.center, 
+                expand=True,  
             )
         ]
 
@@ -40,9 +40,10 @@ class MainApp(ft.Column):
         self.page.clean()
         OfflineWindow(self.page)
         
-        
+#clase para la venta de entrenamiento
         
 class OfflineWindow(ft.Column):
+    print("se ingreso a offline ")
     def __init__(self, page):
         super().__init__()
         self.page = page
@@ -56,10 +57,14 @@ class OfflineWindow(ft.Column):
         self.k_input = ft.TextField(label="Número de clusters", value=" ")
         self.n_init_input = ft.TextField(label="Número de iteraciones", value=" ")
         self.silhouette_text = ft.Text("Índice de silueta: ")
-        self.image = ft.Image(width=500, height=400)
+        #self.image = ft.Image(width=500, height=400)
+        self.image = ft.Image(
+            width = 500,
+            height = 400,
+            src_base64= " EN ESPERA...",
+            #bgcolor = ft.colors.GREY_300, 
+        )
         self.silhouette_button = ft.ElevatedButton("Calcular Silueta", on_click=self.calculate_silhouette, visible=False)
-        self.classification_result = ft.Text("Resultado de Clasificación: ")
-
         self.x_axis_dropdown = ft.Dropdown(label="Característica X", options=[])
         self.y_axis_dropdown = ft.Dropdown(label="Característica Y", options=[])
 
@@ -84,11 +89,11 @@ class OfflineWindow(ft.Column):
                             self.save_model_button,
                             self.silhouette_button,
                             self.silhouette_text,
-                            self.classification_result,
+                            
                         ],
                         expand=1,
                     ),
-                    ft.Container(content=self.image, expand=2),
+                    self.image,
                 ],
                 expand=True,
             )

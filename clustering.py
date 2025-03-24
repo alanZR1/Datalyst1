@@ -28,11 +28,10 @@ def train_kmeans(df, k, n_init, x_col, y_col):
     if x_col not in df_numeric.columns or y_col not in df_numeric.columns:
         raise ValueError(f"Las columnas {x_col} o {y_col} no existen en el DataFrame.")
 
-    # Entrena el modelo K-Means
+    # Entrenamiento ....
     kmeans = KMeans(n_clusters=k, n_init=n_init)
     kmeans.fit(df_numeric)
 
-    # Genera el gráfico
     fig, ax = plt.subplots()
     ax.scatter(df_numeric[x_col], df_numeric[y_col], c=kmeans.labels_, cmap="viridis")
     ax.scatter(kmeans.cluster_centers_[:, df_numeric.columns.get_loc(x_col)], 
@@ -66,3 +65,5 @@ def calculate_silhouette(df, kmeans):
 
     # Calcula el índice de silueta
     return silhouette_score(df_numeric, kmeans.labels_)
+
+    #def Davis:

@@ -9,7 +9,7 @@ def load_csv(filepath):
     
     Retorna:
         pd.DataFrame: DataFrame con los datos limpios.
-    
+    #todo lo que ek usuario pueda que lo escoja
     Lanza:
         FileNotFoundError: Si el archivo no existe.
         pd.errors.EmptyDataError: Si el archivo está vacío.
@@ -33,9 +33,9 @@ def load_csv(filepath):
 def clean_data(df):
     # Elimina filas con valores nulos
     df = df.dropna()
-    
-    # Opcional: Rellenar valores nulos con 0 (si prefieres no eliminarlos)
-    # df = df.fillna(0)
+    # Opcional:
+    #df = df.fillna(1).mean()
+    #el usuario escoge esta opcion
     
     # Convierte todas las columnas numéricas a tipo float
     for col in df.select_dtypes(include=["number"]).columns:
