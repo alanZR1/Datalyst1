@@ -1,3 +1,4 @@
+import asyncio
 import flet as ft
 from interface import MainApp
 
@@ -8,11 +9,19 @@ y controles
 """
 
 def main(page: ft.Page):
-    page.title = "Datalyst"
-    page.window.width = 800
-    page.window_height = 600
-    page.scroll = ft.ScrollMode.AUTO 
-    app = MainApp(page)
-    page.add(app)
+    
+    try:
+        page.title = "Datalyst"
+        page.window.width = 800
+        page.window.height = 600
+        page.scroll = ft.ScrollMode.AUTO       
+        app = MainApp(page)
+        page.add(app)
+    except Exception as e:
+        print(f"Error en la aplicación: {str(e)}")
+        raise
+        
 
-ft.app(target = main)
+if __name__ == "__main__":
+    # Ejecuta la aplicación Flet
+    ft.app(target = main)
