@@ -12,7 +12,7 @@ class MainApp(ft.Column):
         self.data = None
         self.kmeans = None
         self.df = None
-
+        
         # Centrar los botones
         self.controls = [
             ft.Container(
