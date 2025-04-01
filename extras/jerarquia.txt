@@ -1,12 +1,20 @@
-Datalyst/
-│-- main.py                # Archivo principal que ejecuta la app
-│-- interface.py           # Contiene la interfaz Flet
-    |-- Online 
-    |-- Offline
-│-- data_processing.py     # Funciones para procesamiento de datos ()
-    |--remover ouliers
-    |--normalizacion
-    | Imputacion
-│-- clustering.py          # Contiene la lógica de K-Means y los demas metodos
-    |-- k-means (por el momento)
-|-- model_save_carge.py
+DATALYSTI/
+│
+├── src/                    # Código fuente principal
+│   ├── clustering/         # Módulos de clustering
+│   │   └── clustering.py
+│   ├── data_processing/    # Procesamiento de datos
+│   │   └── data_processing.py
+│   ├── interface/          # Interfaz de usuario (pantallas)
+│   │   ├── __init__.py
+│   │   ├── screen1.py      # Primera pantalla
+│   │   └── screen2.py      # Segunda pantalla
+│   ├── models/             # Modelos y carga de modelos
+│   │   └── model_save_load.py
+│   └── main.py             # Punto de entrada
+│
+├── extras/                 # Archivos adicionales (datos, configuraciones, etc.)
+├── tests/                  # Pruebas unitarias/integración
+├── .env                    # Variables de entorno (opcional)
+├── requirements.txt        # Dependencias del proyecto
+└── README.md               # Documentación del proyecto
