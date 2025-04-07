@@ -1,6 +1,6 @@
 import asyncio
 import flet as ft
-from interface import MainApp
+from interface import main_app
 
 """ crea una imagen de 800 x 600 de reso,
 la instancua hacuia mainAPP en 
@@ -15,7 +15,7 @@ def main(page: ft.Page):
         page.window.width = 800
         page.window.height = 600
         page.scroll = ft.ScrollMode.AUTO       
-        app = MainApp(page)
+        app = main_app(page)
         page.add(app)
     except Exception as e:
         print(f"Error en la aplicación: {str(e)}")

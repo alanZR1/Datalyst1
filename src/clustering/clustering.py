@@ -66,4 +66,3 @@ def calculate_silhouette(df, kmeans):
     # Calcula el índice de silueta
     return silhouette_score(df_numeric, kmeans.labels_)
 
-    #def Davis:
