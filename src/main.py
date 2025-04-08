@@ -1,12 +1,14 @@
-import asyncio
-import flet as ft
-from interface import main_app
+import sys
+from pathlib import Path
 
-""" crea una imagen de 800 x 600 de reso,
-la instancua hacuia mainAPP en 
+sys.path.append(str(Path(__file__).parent.parent))  # Apunta a la raíz del proyecto
+import flet as ft
+from interface.main_app import MainApp
+
+""" crea una imagen de 800 x 600 de resolucion,
+la instancua hacia main_app en 
 el script interface donde estan todos los parametros 
-y controles 
-"""
+y controles"""
 
 def main(page: ft.Page):
     
@@ -15,7 +17,7 @@ def main(page: ft.Page):
         page.window.width = 800
         page.window.height = 600
         page.scroll = ft.ScrollMode.AUTO       
-        app = main_app(page)
+        app = MainApp(page)
         page.add(app)
     except Exception as e:
         print(f"Error en la aplicación: {str(e)}")
