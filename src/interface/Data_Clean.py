@@ -1,10 +1,7 @@
 import flet as ft
-import pandas as pd
-from data_processing import load_csv
-import traceback
 import interface.Offline_Window as Offline_Window
-from data_processing import load_csv, clean_data
-
+import traceback
+from src.data_processing.data_processing import load_csv, clean_data
 
 
 class DataCleanWindow(ft.Column):

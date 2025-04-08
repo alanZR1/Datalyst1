@@ -1,6 +1,8 @@
 import flet as ft
 import pandas as pd
-from data_processing import train_kmeans, save_model, calculate_silhouette       
+from src.clustering.clustering import train_kmeans, calculate_silhouette
+ 
+from src.models.model_save_carge import save_model    
 #clase para la venta de entrenamiento
         
 class OfflineWindow(ft.Column):
