@@ -171,40 +171,29 @@ class DataCleanWindow(ft.Column):
             print(f"Columnas seleccionadas: X={x_col}, Y={y_col}")
             print(self.df[[x_col, y_col]].head(2))            
             
-            self.update_data_table()
+            self.update_data_table(x_col, y_col)
             self.show_snackbar("Vista previa actualizada", "green")
             
-            # Actualiza la vista previa
-            numeric_cols = self.df.select_dtypes(include=["number"]).columns.tolist()
-            self.preview_x_dropdown.options = [ft.dropdown.Option(col) for col in numeric_cols]
-            self.preview_y_dropdown.options = [ft.dropdown.Option(col) for col in numeric_cols]
-            
-            #habilita los dropdowns
-            self.preview_x_dropdown.disabled = False
-            self.preview_y_dropdown.disabled = False
-            self.update_preview_btn.disabled = False
-
-            # Actualiza DataTable
-            self.update_data_table()
-            self.show_snackbar("Vista previa actualizada", "green")
-
         except Exception as ex:
             print(f"Error en update_preview: {traceback.format_exc()}")
             self.show_snackbar(f"Error al mostrar vista previa: {str(ex)}", "red")
             
-    def update_data_table(self):
-        """Actualiza la tabla de vista previa con los datos actuales"""
+    def update_data_table(self, x_col=None , y_col=None):
         try:
             if self.df is None or self.df.empty:
                 return
-
+            # Si se especifican columnas, muestra solo esas
+            if x_col and y_col:
+                display_df = self.df[[x_col, y_col]].head(5)
+            else:
+                display_df = self.df.head(5)
             # Crear columnas para el DataTable
-            columns = [ft.DataColumn(ft.Text(col)) for col in self.df.columns[:5]]  # Mostrar máximo 5 columnas
+            columns = [ft.DataColumn(ft.Text(col)) for col in display_df.columns[:5]]  # Mostrar máximo 5 columnas
         
             # Crear filas con los primeros registros
             rows = []
-            for _, row in self.df.head(5).iterrows():  # Mostrar máximo 5 filas
-                cells = [ft.DataCell(ft.Text(str(row[col]))) for col in self.df.columns[:5]]
+            for _, row in display_df.iterrows():  
+                cells = [ft.DataCell(ft.Text(str(row[col]))) for col in display_df.columns[:5]]
                 rows.append(ft.DataRow(cells=cells))
         
             self.data_preview.columns = columns
@@ -214,6 +203,7 @@ class DataCleanWindow(ft.Column):
         except Exception as ex:
             print(f"Error actualizando tabla: {str(ex)}")
             self.show_snackbar("Error al mostrar datos", "red")
+            raise
             
     def apply_cleaning(self, e):
         """Aplica los parámetros de limpieza y pasa a la ventana de entrenamiento"""
