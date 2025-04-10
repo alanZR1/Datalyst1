@@ -113,17 +113,23 @@ class DataCleanWindow(ft.Column):
 
             # 1. Carga el archivo
             self.df = load_csv(file_path)  # Carga el archivo CSV
-
+            print(f"DataFrame cargado. Filas: {len(self.df)}")
+            print(self.df.head(2))
            
                         # Actualiza la vista previa
             numeric_cols = self.df.select_dtypes(include=["number"]).columns.tolist()
             self.preview_x_dropdown.options = [ft.dropdown.Option(col) for col in numeric_cols]
             self.preview_y_dropdown.options = [ft.dropdown.Option(col) for col in numeric_cols]
             
+            if numeric_cols:
+               self.preview_x_dropdown.value = numeric_cols[0]
+               self.preview_y_dropdown.value = numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0] 
+               
             #habilita los dropdowns
             self.preview_x_dropdown.disabled = False
             self.preview_y_dropdown.disabled = False
             self.update_preview_btn.disabled = False
+            self.page.update()
             
             self.controls[0].controls[0].controls[-1].disabled = False
              # 3. Asignación solo si todo está bien
@@ -131,7 +137,7 @@ class DataCleanWindow(ft.Column):
             
             self.show_snackbar("Archivo cargado correctamente", "green")
             # 4. Actualización UI
-            self.update_preview()
+            self.update_preview(e)
             self.enable_training_button()
 
             print("=== Debug fin ===\n")
@@ -150,17 +156,24 @@ class DataCleanWindow(ft.Column):
             self.controls[0].controls[0].controls[-1].disabled = False
             self.page.update()
             
-    def update_preview(self):
+    def update_preview(self, e):
         try:
             if self.df is None:
                 raise ValueError("No hay datos cargados")
+            
             x_col = self.preview_x_dropdown.value
             y_col = self.preview_y_dropdown.value
 
             if not x_col or not y_col:
-                raise ValueError("Selecciona ambas columnas para la vista previa.")
+                raise ValueError("Selecciona ambas columnas.")
+            
+            # Debug: verifica valores
+            print(f"Columnas seleccionadas: X={x_col}, Y={y_col}")
+            print(self.df[[x_col, y_col]].head(2))            
+            
             self.update_data_table()
             self.show_snackbar("Vista previa actualizada", "green")
+            
             # Actualiza la vista previa
             numeric_cols = self.df.select_dtypes(include=["number"]).columns.tolist()
             self.preview_x_dropdown.options = [ft.dropdown.Option(col) for col in numeric_cols]
