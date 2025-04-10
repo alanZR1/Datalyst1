@@ -5,11 +5,6 @@ sys.path.append(str(Path(__file__).parent.parent))  # Apunta a la raíz del proy
 import flet as ft
 from interface.main_app import MainApp
 
-""" crea una imagen de 800 x 600 de resolucion,
-la instancua hacia main_app en 
-el script interface donde estan todos los parametros 
-y controles"""
-
 def main(page: ft.Page):
     
     try:
