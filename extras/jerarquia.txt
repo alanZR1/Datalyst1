@@ -7,13 +7,12 @@ DATALYSTI/
 │   │   └── data_processing.py
 │   ├── interface/          # Interfaz de usuario (pantallas)
 │   │   ├── MainApp.py
-│   │   ├── screen1.py      # Primera pantalla
-│   │   └── screen2.py      # Segunda pantalla
+│   │   ├── Data_Clean.py      # Primera pantalla
+│   │   └── offline_window.py      # Segunda pantalla
 │   ├── models/             # Modelos y carga de modelos
 │   │   └── model_save_load.py
 │   └── main.py             # Punto de entrada
 │
 ├── extras/                 # Archivos adicionales (datos, configuraciones, etc.)
 ├── tests/                  # Pruebas unitarias/integración
-├── requirements.txt        # Dependencias del proyecto
 └── .gitignore
