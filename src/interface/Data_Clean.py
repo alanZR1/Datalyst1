@@ -1,5 +1,5 @@
 import flet as ft
-import interface.Offline_Window as Offline_Window
+from interface.Offline_Window import OfflineWindow
 import traceback
 from src.data_processing.data_processing import load_csv, clean_data
 
@@ -230,7 +230,7 @@ class DataCleanWindow(ft.Column):
 
             # Pasar a ventana de entrenamiento
             self.page.clean()
-            Offline_Window(self.page, cleaned_df)
+            OfflineWindow(self.page, cleaned_df)
 
         except Exception as ex:
             self.show_snackbar(f"Error en limpieza: {str(ex)}", "red")
