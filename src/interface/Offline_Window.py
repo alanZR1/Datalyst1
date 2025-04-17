@@ -1,98 +1,145 @@
 import flet as ft
 import pandas as pd
 from src.clustering.clustering import train_kmeans, calculate_silhouette
- 
 from src.models.model_save_carge import save_model    
 #clase para la venta de entrenamiento
         
 class OfflineWindow(ft.Column):
-    print("se ingreso a entrenamiento ")
     def __init__(self, page, cleaned_df):
-        super().__init__()
+        super().__init__(expand=True, scroll=ft.ScrollMode.AUTO)
         self.page = page
-        self.df = cleaned_df #datos ya limpios
+        self.df = cleaned_df
         self.kmeans = None
 
-        #controles de la ventana secundaria
-        self.k_input = ft.TextField(label="Número de clusters", value="0")
-        self.n_init_input = ft.TextField(label="Número de iteraciones", value="0")
-        
-        #dropdowns para seleccionar las columnas
+        # Controles
+        self.k_input = ft.TextField(label="Número de clusters", value="2")
+        self.n_init_input = ft.TextField(label="Número de iteraciones", value="10")
+
+        # Configuración de dropdowns
         numeric_columns = self.df.select_dtypes(include=["number"]).columns.tolist()
+        dropdown_options = [ft.dropdown.Option(col) for col in numeric_columns]
+
         self.x_axis_dropdown = ft.Dropdown(
-            label = "Característica X",
-            options = [],
-            value = numeric_columns[0] if numeric_columns else None
-            )
-        self.y_axis_dropdown = ft.Dropdown(
-            label = "Característica Y",
-            options = [],
-            value = numeric_columns[1] if len(numeric_columns) > 1 else None
-            )
-        
-        # area de visualizacion
-        self.image = ft.Image(
-            width = 500,
-            height = 400,
-            src_base64 = " EN ESPERA...",
-            #bgcolor = ft.colors.GREY_300,
-            border_radius = 10,
-            fit = ft.ImageFit.CONTAIN  
-        )
-        self.image_container = ft.Container(
-            content = self.image,
-            bgcolor = ft.colors.GREY_300,
-            padding = 10,
-            border_radius = 10
-        )
-        
-        # Botones y resultados
-        
-        self.train_button = ft.ElevatedButton(
-            "Entrenar",
-            on_click = self.train_kmeans,
-            icon = ft.icons.PLAY_ARROW
-        )
-        self.silhouette_text = ft.Text("Índice de silueta: -")
-        self.save_model_button = ft.ElevatedButton(
-            "Guardar Modelo",
-            on_click = self.save_model,
-            visible = False,
-            icon = ft.icons.SAVE
+            label="Característica X",
+            options=dropdown_options,
+            value=numeric_columns[0] if numeric_columns else None,
+            width=200,
+            height=60
         )
 
-        # Diseño de la ventana secundaria
+        self.y_axis_dropdown = ft.Dropdown(
+            label="Característica Y",
+            options=dropdown_options,
+            value=numeric_columns[1] if len(numeric_columns) > 1 else None,
+            width=200,
+            height=60
+        )
+
+        # Área de visualización
+        self.image = ft.Image(
+            width=500,
+            height=400,
+            src_base64="EN ESPERA...",
+            border_radius=10,
+            fit=ft.ImageFit.CONTAIN
+        )
+        
+        self.train_button = ft.ElevatedButton(
+        "Entrenar",
+        on_click=self.train_kmeans,
+        icon=ft.icons.PLAY_ARROW
+        )
+
+        self.save_model_button = ft.ElevatedButton(
+        "Guardar Modelo",
+        on_click=self.save_model,
+        visible=False,
+        icon=ft.icons.SAVE
+        )
+        
+        self.silhouette_text = ft.Text(
+        "Índice de silueta: -",
+        size=14,
+        weight="bold",
+        color=ft.colors.BLACK
+        )
+        
+        # Layout corregido
         self.controls = [
             ft.Row(
                 [
-                    ft.Column(
-                        [
-                            ft.text.Text("Entrenamiento de K-Means", size = 18, weight = "bold"),
-                            ft.text.Text("Datos ya procesados", color = ft.colors.GREEN),
-                            ft.Divider(),
-                            self.k_input,
-                            self.n_init_input,
-                            ft.text.Text("Seleccion de los ejes", weight = "bold"),
-                            ft.Row([self.x_axis_dropdown, self.y_axis_dropdown]),
-                            ft.Divider(),
-                            self.train_button,
-                            self.save_model_button,
-                            ft.Divider(),
-                            self.silhouette_text,
-                        ],
-                        spacing = 15,
-                        width = 300
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text("Entrenamiento de K-Means", size=18, weight="bold"),
+                                ft.Text("Datos ya procesados", color=ft.colors.GREEN),
+                                ft.Divider(height=1),
+                                self.k_input,
+                                self.n_init_input,
+                                ft.Divider(height=1),
+                                ft.Text("Selección de ejes:", weight="bold"),
+                                ft.Row(
+                                    [
+                                        self.x_axis_dropdown,
+                                        self.y_axis_dropdown
+                                    ],
+                                    spacing=20,
+                                    alignment=ft.MainAxisAlignment.START
+                                ),
+                                ft.Divider(height=1),
+                                ft.Row(
+                                    [
+                                        self.train_kmeans,
+                                        self.save_model
+                                    ],
+                                    spacing=10
+                                ),
+                                self.silhouette_text
+                            ],
+                            spacing=10,
+                            scroll=ft.ScrollMode.AUTO
+                        ),
+                        width=350,
+                        padding=15
                     ),
-                    self.image_container
+                    ft.VerticalDivider(width=10),
+                    ft.Container(
+                        content=self.image,
+                        padding=10,
+                        bgcolor=ft.colors.GREY_300,
+                        border_radius=10,
+                        width=550
+                    )
                 ],
-                spacing = 20,
-                expand = True
+                expand=True,
+                spacing=0,
+                vertical_alignment=ft.CrossAxisAlignment.START
             )
         ]
-
-        # Actualiza la página
-        self.page.add(self)
+        self.page.controls.clear()  # Limpia pantalla anterior
+        self.page.add(ft.Container(content=self, expand=True))  # Contenedor principal
         self.page.update()
+
+
+
+
+    def update_preview(self, e):
+        """Actualiza la vista previa cuando cambian las selecciones"""
+        if not hasattr(self, 'image'):
+            return
+        
+        try:
+            x_col = self.x_axis_dropdown.value
+            y_col = self.y_axis_dropdown.value
+        
+            if x_col and y_col:
+                # Muestra datos de muestra en consola para debug
+                print(f"Columnas seleccionadas: {x_col}, {y_col}")
+                print(self.df[[x_col, y_col]].head())
+            
+        except Exception as ex:
+            print(f"Error al actualizar vista previa: {ex}")
+        
         
     def train_kmeans(self, e):
         try:
@@ -102,20 +149,40 @@ class OfflineWindow(ft.Column):
             y_col = self.y_axis_dropdown.value
 
             if not all ([x_col, y_col]):
-                raise ValueError("Por favor selecciona ambas columnas para el entrenamiento.")
+                raise ValueError("Selecciona ambas columnas para el entrenamiento.")
             
             img_base64, self.kmeans = train_kmeans(self.df, k, n_init, x_col, y_col)
             
             self.image.src_base64 = img_base64
             self.save_model_button.visible = True
-            #calcula silueta automaticamente
+            
+            
             score = calculate_silhouette(self.df, self.kmeans)
-            self.silhouette_text.value = f"Índice de silueta: {score:.4f}"
+            self.update_silhouette_text_score(score)
             
             self.page.update()
         except Exception as ex:
             self.show_snackbar(f"Error en entrenamiento: {str(ex)}", "red")
+            
+    def update_silhouette_score(self, score: float = None):
+        """Actualiza el texto del índice de silueta con formato condicional"""
+        if score is not None:
+            # Formateo y coloreado basado en el valor
+            self.silhouette_text.value = f"Índice de silueta: {score:.4f}"
 
+            # Asigna color según calidad del clustering
+            if score > 0.5:
+                self.silhouette_text.color = ft.colors.GREEN
+            elif score > 0.25:
+                self.silhouette_text.color = ft.colors.ORANGE
+            else:
+                self.silhouette_text.color = ft.colors.RED
+        else:
+            # Estado por defecto/reseteo
+            self.silhouette_text.value = "Índice de silueta: -"
+            self.silhouette_text.color = ft.colors.BLACK
+
+        self.page.update()
     def save_model(self, e):
         save_file_dialog = ft.FilePicker(on_result = self.on_save_model)
         self.page.overlay.append(save_file_dialog)
