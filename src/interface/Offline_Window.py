@@ -1,5 +1,5 @@
 import flet as ft
-import pandas as pd
+#import pandas as pd
 from src.clustering.clustering import train_kmeans, calculate_silhouette
 from src.models.model_save_carge import save_model    
 #clase para la venta de entrenamiento
@@ -45,26 +45,26 @@ class OfflineWindow(ft.Column):
         )
         
         self.train_button = ft.ElevatedButton(
-        "Entrenar",
-        on_click=self.train_kmeans,
-        icon=ft.icons.PLAY_ARROW
+            "Entrenar",
+            on_click=self.train_kmeans,
+            icon=ft.icons.PLAY_ARROW
         )
 
         self.save_model_button = ft.ElevatedButton(
-        "Guardar Modelo",
-        on_click=self.save_model,
-        visible=False,
-        icon=ft.icons.SAVE
+            "Guardar Modelo",
+            on_click=self.save_model,
+            visible=False,
+            icon=ft.icons.SAVE
         )
         
         self.silhouette_text = ft.Text(
-        "Índice de silueta: -",
-        size=14,
-        weight="bold",
-        color=ft.colors.BLACK
+            "Índice de silueta: -",
+            size=14,
+            weight="bold",
+            color=ft.colors.BLACK
         )
         
-        # Layout corregido
+        # Layout
         self.controls = [
             ft.Row(
                 [
@@ -72,56 +72,40 @@ class OfflineWindow(ft.Column):
                         content=ft.Column(
                             [
                                 ft.Text("Entrenamiento de K-Means", size=18, weight="bold"),
-                                ft.Text("Datos ya procesados", color=ft.colors.GREEN),
+                                #ft.Text("Datos ya procesados", color=ft.colors.GREEN),
                                 ft.Divider(height=1),
                                 self.k_input,
                                 self.n_init_input,
-                                ft.Divider(height=1),
-                                ft.Text("Selección de ejes:", weight="bold"),
+                                ft.Divider(),
+                                self.x_axis_dropdown,
+                                self.y_axis_dropdown,
                                 ft.Row(
                                     [
-                                        self.x_axis_dropdown,
-                                        self.y_axis_dropdown
+                                        self.train_button, 
+                                        self.save_model_button
                                     ],
-                                    spacing=20,
-                                    alignment=ft.MainAxisAlignment.START
-                                ),
-                                ft.Divider(height=1),
-                                ft.Row(
-                                    [
-                                        self.train_kmeans,
-                                        self.save_model
-                                    ],
-                                    spacing=10
-                                ),
+                                    spacing=10,
+                                    ),
                                 self.silhouette_text
                             ],
-                            spacing=10,
-                            scroll=ft.ScrollMode.AUTO
+                            spacing=8,
                         ),
                         width=350,
                         padding=15
                     ),
-                    ft.VerticalDivider(width=10),
                     ft.Container(
                         content=self.image,
-                        padding=10,
-                        bgcolor=ft.colors.GREY_300,
-                        border_radius=10,
-                        width=550
+                        expand=True,
+                        padding=15
                     )
                 ],
                 expand=True,
-                spacing=0,
-                vertical_alignment=ft.CrossAxisAlignment.START
             )
         ]
-        self.page.controls.clear()  # Limpia pantalla anterior
-        self.page.add(ft.Container(content=self, expand=True))  # Contenedor principal
-        self.page.update()
-
-
-
+        #self.page.controls.clear()  # Limpia pantalla anterior
+        #self.page.add(ft.Container(content=self, expand=True))  # Contenedor principal
+        #self.page.update()
+        #self.expand = True
 
     def update_preview(self, e):
         """Actualiza la vista previa cuando cambian las selecciones"""
@@ -158,7 +142,7 @@ class OfflineWindow(ft.Column):
             
             
             score = calculate_silhouette(self.df, self.kmeans)
-            self.update_silhouette_text_score(score)
+            self.update_silhouette_score(score)
             
             self.page.update()
         except Exception as ex:
