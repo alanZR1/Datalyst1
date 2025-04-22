@@ -1,5 +1,5 @@
 import flet as ft
-from interface.Offline_Window import OfflineWindow
+from src.interface.Offline_Window import OfflineWindow
 import traceback
 from src.data_processing.data_processing import load_csv, clean_data
 
@@ -108,13 +108,14 @@ class DataCleanWindow(ft.Column):
 
         try:
             file_path = e.files[0].path
-            print(f"\n=== Debug inicio ===")
-            print(f"Ruta del archivo: {file_path}")
+            #print(f"\n=== Debug inicio ===")
+            #print(f"Ruta del archivo: {file_path}")
 
             # 1. Carga el archivo
             self.df = load_csv(file_path)  # Carga el archivo CSV
-            print(f"DataFrame cargado. Filas: {len(self.df)}")
-            print(self.df.head(2))
+            # debug para reconocer la carga del archivo
+            # print(f"DataFrame cargado. Filas: {len(self.df)}")
+            # print(self.df.head(2))
            
                         # Actualiza la vista previa
             numeric_cols = self.df.select_dtypes(include=["number"]).columns.tolist()
@@ -133,7 +134,7 @@ class DataCleanWindow(ft.Column):
             
             self.controls[0].controls[0].controls[-1].disabled = False
              # 3. Asignación solo si todo está bien
-            print(f"Columnas válidas: {self.df.columns.tolist()}")
+            # print(f"Columnas válidas: {self.df.columns.tolist()}")
             
             self.show_snackbar("Archivo cargado correctamente", "green")
             # 4. Actualización UI
@@ -168,8 +169,8 @@ class DataCleanWindow(ft.Column):
                 raise ValueError("Selecciona ambas columnas.")
             
             # Debug: verifica valores
-            print(f"Columnas seleccionadas: X={x_col}, Y={y_col}")
-            print(self.df[[x_col, y_col]].head(2))            
+            # print(f"Columnas seleccionadas: X={x_col}, Y={y_col}")
+            # print(self.df[[x_col, y_col]].head(2))            
             
             self.update_data_table(x_col, y_col)
             self.show_snackbar("Vista previa actualizada", "green")
@@ -206,7 +207,7 @@ class DataCleanWindow(ft.Column):
             raise
             
     def apply_cleaning(self, e):
-        """Aplica los parámetros de limpieza y pasa a la ventana de entrenamiento"""
+        
         try:
             if self.df is None or self.df.empty:
                 raise ValueError("No hay datos cargados para limpiar")
@@ -230,14 +231,20 @@ class DataCleanWindow(ft.Column):
 
             # Pasar a ventana de entrenamiento
             self.page.clean()
-            OfflineWindow(self.page, cleaned_df)
-
+            
+            offline_win = OfflineWindow(self.page, cleaned_df)
+            self.page.add(offline_win)
+            
+            self.page.update()
+        
         except Exception as ex:
             self.show_snackbar(f"Error en limpieza: {str(ex)}", "red")
+        
         finally:
             # Asegurarse de quitar el indicador de carga
             self.page.splash = None
             self.page.update()
+            
     def show_snackbar(self, message: str, color: str = "green"):
         self.page.snack_bar = ft.SnackBar(ft.Text(message), bgcolor = color)
         self.page.snack_bar.open = True
