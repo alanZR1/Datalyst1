@@ -1,5 +1,4 @@
 import flet as ft
-#import pandas as pd
 from src.clustering.clustering import train_kmeans, calculate_silhouette
 from src.models.model_save_carge import save_model    
 #clase para la venta de entrenamiento
@@ -102,10 +101,6 @@ class OfflineWindow(ft.Column):
                 expand=True,
             )
         ]
-        #self.page.controls.clear()  # Limpia pantalla anterior
-        #self.page.add(ft.Container(content=self, expand=True))  # Contenedor principal
-        #self.page.update()
-        #self.expand = True
 
     def update_preview(self, e):
         """Actualiza la vista previa cuando cambian las selecciones"""
@@ -117,9 +112,9 @@ class OfflineWindow(ft.Column):
             y_col = self.y_axis_dropdown.value
         
             if x_col and y_col:
-                # Muestra datos de muestra en consola para debug
-                print(f"Columnas seleccionadas: {x_col}, {y_col}")
-                print(self.df[[x_col, y_col]].head())
+# Muestra datos de muestra en consola para debug
+#print(f"Columnas seleccionadas: {x_col}, {y_col}")
+#print(self.df[[x_col, y_col]].head())
             
         except Exception as ex:
             print(f"Error al actualizar vista previa: {ex}")
