@@ -111,10 +111,10 @@ class OfflineWindow(ft.Column):
             x_col = self.x_axis_dropdown.value
             y_col = self.y_axis_dropdown.value
         
-            if x_col and y_col:
-# Muestra datos de muestra en consola para debug
-#print(f"Columnas seleccionadas: {x_col}, {y_col}")
-#print(self.df[[x_col, y_col]].head())
+            #if x_col and y_col:
+                # Muestra datos de muestra en consola para debug
+                #print(f"Columnas seleccionadas: {x_col}, {y_col}")
+                #print(self.df[[x_col, y_col]].head())
             
         except Exception as ex:
             print(f"Error al actualizar vista previa: {ex}")
