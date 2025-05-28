@@ -1,6 +1,6 @@
 import flet as ft
-from src.clustering.clustering import train_kmeans, calculate_silhouette
-from src.models.model_save_carge import save_model    
+from src.clustering.clustering import train_kmeans, calculate_silhouette, calculate_optimal_k
+from src.models.model_save_carge import save_model
 #clase para la venta de entrenamiento
         
 class OfflineWindow(ft.Column):
@@ -63,6 +63,28 @@ class OfflineWindow(ft.Column):
             color=ft.colors.BLACK
         )
         
+        self.calculate_k_btn = ft.ElevatedButton(
+            "calcular k optimo",
+            on_click = self.calculate_optimal_k,
+            icon=ft.icons.CALCULATE,
+            tooltip="Calcula el número óptimo de clusters"    
+        )
+        
+        self.k_method = ft.Dropdown(
+            label = "metodo de cálculo",
+            options=[
+                ft.dropdown.Option("(Jambú), método de Jambú"),
+                ft.dropdown.Option("(Silhouette), método de silueta"),
+            ],
+            width=200,
+            value="Silueta"
+        )
+        
+        self.k_resutl = ft.Text(
+            "Resultado de k óptimo: --",
+            size=14,
+            color=ft.colors.BLUE
+            ) 
         # Layout
         self.controls = [
             ft.Row(
@@ -72,6 +94,10 @@ class OfflineWindow(ft.Column):
                             [
                                 ft.Text("Entrenamiento de K-Means", size=18, weight="bold"),
                                 #ft.Text("Datos ya procesados", color=ft.colors.GREEN),
+                                ft.Divider(height=1),
+                                ft.text("calculo de k óptimo", weight="bold"),
+                                ft.row([self.k_method, self.calculate_k_btn]),
+                                self.k_resutl,
                                 ft.Divider(height=1),
                                 self.k_input,
                                 self.n_init_input,
@@ -103,7 +129,6 @@ class OfflineWindow(ft.Column):
         ]
 
     def update_preview(self, e):
-        """Actualiza la vista previa cuando cambian las selecciones"""
         if not hasattr(self, 'image'):
             return
         
@@ -118,8 +143,30 @@ class OfflineWindow(ft.Column):
             
         except Exception as ex:
             print(f"Error al actualizar vista previa: {ex}")
-        
-        
+
+    def calculate_optimal_k(self, e):
+        try:
+            x_col = self.x_axis_dropdown.value
+            y_col = self.y_axis_dropdown.value
+            
+            if not all([x_col, y_col]):
+                raise ValueError("Selecciona ambas columnas")
+            
+            data = self.df[[x_col, y_col]].values
+            method = self.k_method.value  # "jambu", "silhouette" o "elbow"
+            
+            # Llama a la función centralizada
+            optimal_k = calculate_optimal_k(data, method=method)
+            
+            self.k_input.value = str(optimal_k)
+            self.k_result.value = f"K óptimo: {optimal_k}"
+            
+        except Exception as ex:
+            self.show_snackbar(f"Error calculando K: {str(ex)}", "red")
+        finally:
+            self.page.splash = None
+            self.page.update()
+                
     def train_kmeans(self, e):
         try:
             k = int(self.k_input.value)
