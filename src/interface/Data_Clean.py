@@ -213,7 +213,7 @@ class DataCleanWindow(ft.Column):
                 raise ValueError("No hay datos cargados para limpiar")
 
             # Mostrar indicador de procesamiento
-            self.page.splash = ft.ProgressBar()
+            #self.page.splash = ft.ProgressBar()
             self.page.update()
 
             # Aplicar limpieza con los parámetros actuales
@@ -242,7 +242,7 @@ class DataCleanWindow(ft.Column):
         
         finally:
             # Asegurarse de quitar el indicador de carga
-            self.page.splash = None
+            #self.page.splash = None
             self.page.update()
             
     def show_snackbar(self, message: str, color: str = "green"):
