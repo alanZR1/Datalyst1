@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
+
+
 def load_csv(filepath):
     try:
         df = pd.read_csv(filepath)

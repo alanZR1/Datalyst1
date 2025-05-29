@@ -7,42 +7,6 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 
-def calculate_optimal_k(data, method="silhouette", max_k=8):
-
-    if method == "silhouette":
-        optimal_k = calculate_with_silhouette(data)
-    else: 
-        optimal_k = calculate_with_jambu(data)
-        
-    return optimal_k
-
-
-def calculate_with_silhouette(data, max_k = 8):
-    best_k = 2
-    best_score = -1
-    for k in range (2, max_k + 1):
-        kmeans = KMeans(n_clusters=k, n_init=5)
-        labels = kmeans.fit_predict(data)
-        score = calculate_silhouette(data, labels)
-        if score > best_score:
-            best_score = score
-            best_k = k
-            
-    return best_k
-
-
-def calculate_with_jambu(data, max_k = 8):
-    inertias = []
-    
-    for k in range(2, max_k + 1):
-        kmeans = KMeans(n_clusters=k, n_init=5)
-        KMeans.fit(data)
-        inertias.append(kmeans.inertia_)
-        
-    deltas = np.diff(inertias,2)
-    return np.argmax(deltas) + 2  # +2 porque empezamos en k=2
-    
-
 
 
 def train_kmeans(df, k, n_init, x_col, y_col):
