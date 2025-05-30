@@ -13,9 +13,13 @@ def main(page: ft.Page):
         page.title = "Datalyst"
         page.window.width = 800
         page.window.height = 600
-        page.scroll = ft.ScrollMode.AUTO       
+        page.scroll = ft.ScrollMode.AUTO 
+        page.window_icon = "extras/logo.png" 
+              
         app = MainApp(page)
         page.add(app)
+        
+        
     except Exception as e:
         print(f"Error en la aplicación: {str(e)}")
         raise
