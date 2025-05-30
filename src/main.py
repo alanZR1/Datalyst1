@@ -11,8 +11,8 @@ def main(page: ft.Page):
     
     try:
         page.title = "Datalyst"
-        page.window.width = 800
-        page.window.height = 600
+        page.window.width = 1200
+        page.window.height = 800
         page.scroll = ft.ScrollMode.AUTO 
         page.window_icon = "extras/logo.png" 
               

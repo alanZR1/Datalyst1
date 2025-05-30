@@ -7,10 +7,6 @@ class MainApp(ft.Column):
     def __init__(self, page):
         super().__init__()
         self.page = page
-        self.data = None
-        self.kmeans = None
-        self.df = None
-        
         # Logo como imagen (ajusta la ruta)
         self.logo = ft.Image(
             src="extras/logo.png",
@@ -72,7 +68,16 @@ class MainApp(ft.Column):
                 expand=True,  
             )
         ]
-
+    def get_home_view(self):
+        return ft.View(
+        "/",
+        [
+            ft.AppBar(title=ft.Text("Inicio")),
+            ft.ElevatedButton("Online", Icon="cloud", on_click=self.open_online),
+            ft.ElevatedButton("Procesamiento", Icon="data_array", on_click=self.open_processing)
+        ]
+        )
+        
 
     def open_online_window(self, e):
         self.page.snack_bar = ft.SnackBar(ft.Text("Modo Online aún no implementado"), bgcolor="red")
