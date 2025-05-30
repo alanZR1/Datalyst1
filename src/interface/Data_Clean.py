@@ -17,6 +17,17 @@ class DataCleanWindow(ft.Column):
             "remove_duplicates": False,
             "normalize": False
         }
+        
+        self.back_button = ft.FloatingActionButton(
+            icon="arrow_back",
+            bgcolor=ft.Colors.BLUE_700,
+            shape=ft.CircleBorder(),
+            autofocus=True,
+            tooltip="Volver al inicio",
+            mini=True,
+            on_click=self._go_back
+        )
+        
 
         self.continue_btn = ft.ElevatedButton(
             "Continuar a Entrenamiento",
@@ -65,36 +76,48 @@ class DataCleanWindow(ft.Column):
         )
         # diseño de la ventana secundaria
         self.controls = [
-            ft.Row([
-                    ft.Column([
-                            ft.Text("Preprocesamiento de Datos", size=18, weight="bold"),
-                            ft.ElevatedButton("Cargar CSV", on_click=self.pick_file),
-                            ft.Text("Opciones de limpieza:", size=16),
-                            self.remove_outliers,
-                            self.fill_na,
-                            self.normalize_data,
-                            self.remove_duplicates,
-                            self.continue_btn,
-                            self.preview_x_dropdown,
-                            self.preview_y_dropdown,
-                            self.update_preview_btn
-                        ],
-                        width = 400
-                    ),
-                    ft.Container(
-                        content = ft.Column([
-                            ft.Text("Vista previa de datos:", size = 16),
-                            ft.Container(
-                                content = self.data_preview,
-                                border = ft.border.all(1, ft.Colors.GREY_400),
-                                padding = 10,
-                                border_radius = 10,
-                            )
-                        ]),
+            ft.Stack(
+                [
+                ft.Row([
+                        ft.Column([
+                                ft.Text("Preprocesamiento de Datos", size=18, weight="bold"),
+                                ft.ElevatedButton("Cargar CSV", on_click=self.pick_file),
+                                ft.Text("Opciones de limpieza:", size=16),
+                                self.remove_outliers,
+                                self.fill_na,
+                                self.normalize_data,
+                                self.remove_duplicates,
+                                self.continue_btn,
+                                self.preview_x_dropdown,
+                                self.preview_y_dropdown,
+                                self.update_preview_btn
+                            ],
+                            width = 400
+                        ),
+                        ft.Container(
+                            content = ft.Column([
+                                ft.Text("Vista previa de datos:", size = 16),
+                                ft.Container(
+                                    content = self.data_preview,
+                                    border = ft.border.all(1, ft.Colors.GREY_400),
+                                    padding=30,
+                                    border_radius = 10,
+                                )
+                            ]),
+                        expand = True
+                        ),
+                    ],
                     expand = True
-                    )
-                ],
-                expand = True
+                ),
+                
+                ft.Container(
+                    content = self.back_button,
+                    alignment = ft.alignment.bottom_right,
+                    margin = ft.margin.only(right=30, bottom=30),
+                )
+            ],
+            expand = True,
+            
             )
         ]
         self.page.add(self)
@@ -255,6 +278,13 @@ class DataCleanWindow(ft.Column):
             # Asegurarse de quitar el indicador de carga
             self.page.splash = None
             self.page.update()
+            
+    def _go_back(self, e):
+        self.page.overlay.clear()
+        from interface.main_app import MainApp
+        self.page.clean()
+        self.page.add(MainApp(self.page))
+        self.page.update()
             
     def show_snackbar(self, message: str, color: str = "green"):
         self.page.snack_bar = ft.SnackBar(ft.Text(message), bgcolor = color)
