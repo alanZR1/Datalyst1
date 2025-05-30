@@ -65,43 +65,63 @@ class OfflineWindow(ft.Column):
                 weight="bold",
                 color="black"
             )
+            
+            self.back_button = ft.FloatingActionButton(
+                icon = "Arrow_Back",
+                bgcolor= ft.Colors.BLUE_700,
+                shape=ft.CircleBorder(),
+                autofocus=True,
+                tooltip="Volver",
+                mini=True,
+                on_click= self.go_back
+            )
 
             # Layout
             self.controls = [
-                ft.Row(
-                    [
-                        ft.Container(
-                            content=ft.Column(
-                                [
-                                    ft.Text("Entrenamiento de K-Means", size=18, weight="bold"),
-                                    #ft.Text("Datos ya procesados", color=ft.colors.GREEN),
-                                    ft.Divider(height=1),
-                                    self.k_input,
-                                    self.n_init_input,
-                                    ft.Divider(),
-                                    self.x_axis_dropdown,
-                                    self.y_axis_dropdown,
-                                    ft.Row(
-                                        [
-                                            self.train_button, 
-                                            self.save_model_button
-                                        ],
-                                        spacing=10,
-                                        ),
-                                    self.silhouette_text
-                                ],
-                                spacing=8,
+                ft.Stack(
+                [
+                    ft.Row(
+                        [
+                            ft.Container(
+                                content=ft.Column(
+                                    [
+                                        ft.Text("Entrenamiento de K-Means", size=18,    weight="bold"),
+                                        #ft.Text("Datos ya procesados", color=ft.colors.    GREEN),
+                                        ft.Divider(height=1),
+                                        self.k_input,
+                                        self.n_init_input,
+                                        ft.Divider(),
+                                        self.x_axis_dropdown,
+                                        self.y_axis_dropdown,
+                                        ft.Row(
+                                            [
+                                                self.train_button, 
+                                                self.save_model_button
+                                            ],
+                                            spacing=10,
+                                            ),
+                                        self.silhouette_text
+                                    ],
+                                    spacing=8,
+                                ),
+                                width=350,
+                                padding=15
                             ),
-                            width=350,
-                            padding=15
-                        ),
-                        ft.Container(
-                            content=self.image,
-                            expand=True,
-                            padding=15
-                        )
-                    ],
-                    expand=True,
+                            ft.Container(
+                                content=self.image,
+                                expand=True,
+                                padding=15
+                            )
+                        ],
+                        expand=True,
+                    ),
+                    ft.Container(
+                        content = self.back_button,
+                        alignment=ft.alignment.top_right,
+                        margin=ft.margin.only(right=10, bottom=10),
+                    )
+                ],
+                expand=True,
                 )
             ]
             #self.page.controls.clear()  # Limpia pantalla anterior
@@ -189,6 +209,13 @@ class OfflineWindow(ft.Column):
             except Exception as ex:
                 self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")
             self.page.update()
+            
+    def go_back(self, e):
+        self.page.overlay.clear()
+        from src.interface.Data_Clean import DataCleanWindow
+        self.page.clean()
+        self.page.add(DataCleanWindow(self.page))
+        self.page.update()
 
     def show_snackbar(self, message: str, color: str = "green"):
         self.page.snack_bar = ft.SnackBar(ft.Text(message), bgcolor=color)

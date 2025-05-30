@@ -25,7 +25,7 @@ class DataCleanWindow(ft.Column):
             autofocus=True,
             tooltip="Volver al inicio",
             mini=True,
-            on_click=self._go_back
+            on_click=self.go_back
         )
         
 
@@ -279,7 +279,7 @@ class DataCleanWindow(ft.Column):
             self.page.splash = None
             self.page.update()
             
-    def _go_back(self, e):
+    def go_back(self, e):
         self.page.overlay.clear()
         from interface.main_app import MainApp
         self.page.clean()
