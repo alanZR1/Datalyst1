@@ -20,6 +20,7 @@ class OfflineWindow(ft.Column):
             numeric_columns = self.df.select_dtypes(include=["number"]).columns.tolist()
             dropdown_options = [ft.dropdown.Option(col) for col in numeric_columns]
 
+
             self.x_axis_dropdown = ft.Dropdown(
                 label="Característica X",
                 options=dropdown_options,
@@ -27,6 +28,7 @@ class OfflineWindow(ft.Column):
                 width=200,
                 #height=60
             )
+            
 
             self.y_axis_dropdown = ft.Dropdown(
                 label="Característica Y",
@@ -45,11 +47,13 @@ class OfflineWindow(ft.Column):
                 fit=ft.ImageFit.CONTAIN
             )
 
+
             self.train_button = ft.ElevatedButton(
                 "Entrenar",
                 on_click=self.train_kmeans,
                 icon="play_arrow",
             )
+
 
             self.save_model_button = ft.ElevatedButton(
                 "Guardar Modelo",
@@ -166,16 +170,16 @@ class OfflineWindow(ft.Column):
             self.image.src_base64 = img_base64
             self.save_model_button.visible = True
 
-
             score = calculate_silhouette(self.df, self.kmeans)
+            
             self.update_silhouette_score(score)
-
             self.page.update()
+            
         except Exception as ex:
             self.show_snackbar(f"Error en entrenamiento: {str(ex)}", "red")
 
     def update_silhouette_score(self, score: float = None):
-        """Actualiza el texto del índice de silueta con formato condicional"""
+        
         if score is not None:
             # Formateo y coloreado basado en el valor
             self.silhouette_text.value = f"Índice de silueta: {score:.4f}"
@@ -199,6 +203,7 @@ class OfflineWindow(ft.Column):
         self.page.update()
         save_file_dialog.save_file()
 
+
     def on_save_model(self, e: ft.FilePickerResultEvent):
         if e.path:
             try:
@@ -209,12 +214,14 @@ class OfflineWindow(ft.Column):
                 self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")
             self.page.update()
             
+            
     def go_back(self, e):
         self.page.overlay.clear()
         from src.interface.Data_Clean import DataCleanWindow
         self.page.clean()
         self.page.add(DataCleanWindow(self.page))
         self.page.update()
+
 
     def show_snackbar(self, message: str, color: str = "green"):
         self.page.snack_bar = ft.SnackBar(ft.Text(message), bgcolor=color)

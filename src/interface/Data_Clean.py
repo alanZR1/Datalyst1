@@ -134,10 +134,8 @@ class DataCleanWindow(ft.Column):
             file_path = e.files[0].path
             print(f"\n=== Debug inicio ===")
             print(f"Ruta del archivo: {file_path}")
-            #print(f"\n=== Debug inicio ===")
-            #print(f"Ruta del archivo: {file_path}")
+            
 
-            # 1. Carga el archivo
             self.df = load_csv(file_path)  # Carga el archivo CSV
             print(f"DataFrame cargado. Filas: {len(self.df)}")
             print(self.df.head(2))
