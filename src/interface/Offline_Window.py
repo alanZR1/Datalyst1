@@ -1,5 +1,4 @@
 import flet as ft
-#import pandas as pd
 from src.clustering.clustering import train_kmeans, calculate_silhouette
 from src.models.model_save_carge import save_model    
 #clase para la venta de entrenamiento
