@@ -62,7 +62,7 @@ class DataCleanWindow(ft.Column):
 
         self.file_picker = ft.FilePicker(on_result = self.file_selected)
         self.page.overlay.append(self.file_picker)
-        self.remove_outliers = ft.Switch(label="Eliminar Outliers", value=False)
+        self.remove_outliers = ft.Switch(label = "Eliminar Outliers", value = False)
         self.fill_na = ft.Dropdown(
             label = "Rellenar valores nulos",
             options = [
