@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import base64
@@ -6,6 +5,41 @@ from io import BytesIO
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
+
+def calculate_optimal_k(df, method = "silhouette", max_k = 10):
+    
+    if method == "silhouette":
+        return silhouette_k(df, max_k)    
+    else:
+        return jambu_k(df, max_k) 
+    
+    
+    
+def jambu_k(df, max_k):
+    inertias = []
+    
+    for k in range(1, max_k + 1):
+        kmeans = KMeans(n_clusters = k, n_init = 5).fit(df)
+        inertias.append(kmeans.inertia_)
+    
+    deltas = np.diff(inertias, 2)
+    
+    return np.argmax(deltas) + 2  
+
+
+
+def silhouette_k(df, max_k):
+    best_k, best_score = 2, -1
+    
+    for k in range(2, max_k + 1):
+        labels = KMeans(n_clusters = k, n_init = 5).fit_predict(df)
+        score = silhouette_score(df, labels)
+    
+        if score > best_score:
+            best_k, best_score = k, score
+    
+    return best_k
+    
 
 def train_kmeans(df, k, n_init, x_col, y_col):
  
