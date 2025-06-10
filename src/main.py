@@ -12,7 +12,7 @@ from interface.main_app import MainApp
 def main(page: ft.Page):
     try:
         page.title = "Datalyst"
-        page.window.width = 800
+        page.window.width = 900
         page.window.height = 600
         page.scroll = ft.ScrollMode.AUTO 
         page.window_icon = "extras/logo.png" 
