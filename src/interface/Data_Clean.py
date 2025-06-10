@@ -14,6 +14,7 @@ class DataCleanWindow(ft.Column):
         super().__init__()
         self.page = page
         self.df = None
+        
         self.cleaning_params = {
             "remove_outliers": False,
             "fill_na": "none",
@@ -35,34 +36,40 @@ class DataCleanWindow(ft.Column):
         self.continue_btn = ft.ElevatedButton(
             "Continuar a Entrenamiento",
             on_click = self.apply_cleaning,
-            disabled = True
+            disabled = True,
+            width = 200
         )
 
 
         self.preview_x_dropdown = ft.Dropdown(
             label = "Vista previa - Eje X", 
             options = [], 
-            disabled = True
+            disabled = True,
+            width = 200
         )
         
         
         self.preview_y_dropdown = ft.Dropdown(
             label = "Vista previa - Eje Y", 
             options = [], 
-            disabled = True
+            disabled = True,
+            width = 200
         )
         
 
         self.update_preview_btn = ft.ElevatedButton(
             "Actualizar Vista Previa",
             on_click = self.update_preview,
-            disabled = True
+            disabled = True,
+            width = 200
         )
         
 
         self.file_picker = ft.FilePicker(on_result = self.file_selected)
         self.page.overlay.append(self.file_picker)
+        
         self.remove_outliers = ft.Switch(label = "Eliminar Outliers", value = False)
+        
         self.fill_na = ft.Dropdown(
             label = "Rellenar valores nulos",
             options = [
@@ -71,7 +78,7 @@ class DataCleanWindow(ft.Column):
                 ft.dropdown.Option("median", "Mediana"),
             ],
             
-            value="none"
+            value = "none"
         
         )
 
@@ -84,26 +91,40 @@ class DataCleanWindow(ft.Column):
         
         
         self.controls = [
-            ft.Stack(
-                [
+            
+            ft.Column([                           
                 ft.Row([
                         ft.Column([
-                                ft.Text("Preprocesamiento de Datos", size = 18, weight = "bold"),
-                                ft.ElevatedButton("Cargar CSV", on_click = self.pick_file),
-                                ft.Text("Opciones de limpieza:", size = 16),
+                                ft.Row([
+                                    
+                                    ft.Container(
+                                        content = self.back_button,
+                                        alignment = ft.alignment.center_right,
+                                        expand = True
+                                    ),
+                                    ft.Text("Preprocesamiento de Datos", size = 18, weight = "bold"),
+                                ], 
+                                alignment="spaceBetween"
+                                ),
                                 
+                                ft.Divider(height = 20),
+                                ft.ElevatedButton("Cargar CSV", on_click = self.pick_file),
+                                self.preview_x_dropdown,
+                                self.preview_y_dropdown,
+                                
+                                ft.Text("Opciones de limpieza:", size = 16),
                                 self.remove_outliers,
                                 self.fill_na,
                                 self.normalize_data,
                                 self.remove_duplicates,
+                                ft.Divider(height = 20),
                                 self.continue_btn,
-                                self.preview_x_dropdown,
-                                self.preview_y_dropdown,
-                                self.update_preview_btn
+                                
+                                
                             ],
-                                  
-                            width = 400
+                            width = 300
                         ),
+                        
                         
                         ft.Container(
                             content = ft.Column([
@@ -112,29 +133,22 @@ class DataCleanWindow(ft.Column):
                                     content = self.data_preview,
                                     border = ft.border.all(1, ft.Colors.GREY_400),
                                     padding = 30,
-                                    border_radius = 10,
-                                )
+                                    border_radius = 5,
+                                    width = 500,
+                                ),
+                            self.update_preview_btn,
                             ]),
                             
-                        expand = True
+                        expand = False,
                         
                         ),
+                        
                     ],
                        
                     expand = True
                 
                 ),
-                
-                ft.Container(
-                    content = self.back_button,
-                    alignment = ft.alignment.bottom_right,
-                    margin = ft.margin.only(right = 30, bottom = 30),
-                )
-            ],
-                
-            expand = True,
-            
-            )
+            ]),
         ]
         
         self.page.add(self)

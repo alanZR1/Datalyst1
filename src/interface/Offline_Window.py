@@ -1,6 +1,7 @@
 import flet as ft
 from src.clustering.clustering import train_kmeans, calculate_silhouette, calculate_optimal_k
 from src.models.model_save_carge import save_model    
+import pickle
 
 
 class OfflineWindow(ft.Column):
@@ -20,30 +21,6 @@ class OfflineWindow(ft.Column):
             dropdown_options = [ft.dropdown.Option(col) for col in numeric_columns]
             
             
-            self.calculate_k_btn = ft.ElevatedButton(
-                "Calcular K óptimo",
-                icon = "calculate",
-                on_click = self.calculate_optimal_k,
-                tooltip = "Calcula el número óptimo de clusters",
-                style = ft.ButtonStyle(
-                    shape = ft.RoundedRectangleBorder(radius = 10),
-                    padding = 20
-                )
-            )
-                    
-                    
-            self.k_method = ft.Dropdown(
-                label = "Método de cálculo",
-                options = [
-                    ft.dropdown.Option("jambu", "Método de Jambú"),
-                    ft.dropdown.Option("silhouette", "Método de Silueta"),
-                ],
-                value = "silhouette",
-                width = 200
-            )
-        
-            self.k_result = ft.Text("K óptimo: --", size = 14, color = ft.Colors.BLUE)
-
             self.x_axis_dropdown = ft.Dropdown(
                 label = "Característica X",
                 options = dropdown_options,
@@ -58,8 +35,39 @@ class OfflineWindow(ft.Column):
                 value = numeric_columns[1] if len(numeric_columns) > 1 else None,
                 width = 200,
             )
-
             
+            
+            self.calculate_k_btn = ft.ElevatedButton(
+                "Calcular K óptimo",
+                icon = "calculate",
+                on_click = self.calculate_optimal_k,
+                tooltip = "Calcula el número óptimo de clusters",
+                style = ft.ButtonStyle(
+                    shape = ft.RoundedRectangleBorder(radius = 10),
+                    padding = 10
+                )
+            )
+                    
+                    
+            self.k_method = ft.Dropdown(
+                label = "Método de para calcular K optimo", 
+                options = [
+                    ft.dropdown.Option("jambu", "Método de Jambú"),
+                    ft.dropdown.Option("silhouette", "Método de Silueta"),
+                ],
+                value = "silhouette",
+                width = 230
+            )
+        
+            self.k_result = ft.Text(
+                "K óptimo: --",
+                size = 14,
+                weight = "bold",
+                color = "blue",
+                height = 50,
+                )
+
+
             self.image = ft.Image(
                 width = 500,
                 height = 400,
@@ -104,68 +112,68 @@ class OfflineWindow(ft.Column):
             
 
             self.controls = [
-                ft.Stack([
+                
+                ft.Column([
                     ft.Row([
-                            ft.Container(
-                                content = ft.Column([
-                                        ft.Text("Entrenamiento de K-Means", size = 18, weight = "bold"),
-                                        
-                                         ft.Row([
-                                            self.k_method,
-                                            self.calculate_k_btn
-                                        ], spacing = 10),
-                                         
-                                         self.k_result,
-                                        
-                                        ft.Divider(height = 1),
-                                        self.k_input,
-                                        self.n_init_input,
-                                        
-                                        
-                                        ft.Divider(),
-                                        self.x_axis_dropdown,
-                                        self.y_axis_dropdown,
-                   
-                   
-                                        ft.Row([
-                                            self.train_button, 
-                                            self.save_model_button
-                                        ],      
-                                        spacing = 10),
-                                        
-                                        self.silhouette_text
+                        ft.Column([
+                                ft.Row([
+                                    ft.Container(
+                                        content=self.back_button,
+                                        alignment=ft.alignment.center_right,
+                                        expand=True
+                                    ),
+                                    ft.Text("Preprocesamiento de Datos", size=18, weight="bold"),
                                     ],
-                                                    
-                                    spacing = 8,
+                                       
+                                    alignment = "spaceBetween"
+                                    ),
+                                        
+                                    ft.Divider(height = 20),
+                                    ft.Text("Selecciona las características para el entrenamiento:", size = 13),
+                                    self.x_axis_dropdown,
+                                    self.y_axis_dropdown, 
+                                    
+                                    ft.Divider(height = 20),
+                                    ft.Text("Selecciona el método para calcular K óptimo:", size = 13),
+                                    self.k_method,
+                                    self.calculate_k_btn, 
+                                    self.k_result,
+                                                                         
+                                    
+                                    ft.Divider(height = 20),
+                                    self.k_input,
+                                    self.n_init_input,
+                          
+                                    self.silhouette_text
                                 
-                                ),
-                                
-                                width = 350,
-                                padding = 15
-                            ),
+                            ],
+                            width = 300,
                             
-                            ft.Container(
-                                content = self.image,
-                                expand = True,
-                                padding = 15
-                            )
-                        ],
+                        ),
+                        ft.Container(
+                            content = ft.Column([
+                                ft.Container(
+                                    content = self.image,
+                                    expand = True,
+                                    padding = 15,
+                            ),
+                            self.train_button, 
+                            self.save_model_button,
+                        ]),
+                    expand = False,
+                    )
+                
+                ],
                            
-                        expand = True,
+                    expand = True,
                         
                     ),
-                    
-                    ft.Container(
-                        content = self.back_button,
-                        alignment = ft.alignment.top_right,
-                        margin = ft.margin.only(right = 10, bottom = 10),
-                    )
-                ],
-                         
-                expand = True,
-                
-                )
+                     
+                ]),
             ]
+            self.page.add(self)
+            self.page.update()
+  
 
         except Exception as ex:
             print(f"Error en OfflineWindow.__init__: {ex}")
@@ -197,6 +205,8 @@ class OfflineWindow(ft.Column):
 
             if not all ([x_col, y_col]):
                 raise ValueError("Selecciona ambas columnas para el entrenamiento.")
+            
+            self.X_train = self.df[[x_col, y_col]].values
 
             img_base64, self.kmeans = train_kmeans(self.df, k, n_init, x_col, y_col)
 
@@ -239,17 +249,23 @@ class OfflineWindow(ft.Column):
 
 
     def on_save_model(self, e: ft.FilePickerResultEvent):
-        if e.path:
-            try:
-                save_model(self.kmeans, e.path)
-                self.show_snackbar(f"✅ Modelo guardado en: {e.path}")
-                self.page.update()
-                
-            except Exception as ex:
-                self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")
-           
-            self.page.update()
-            
+      if e.path:
+          try:
+              data_to_save = {
+                  "model": self.kmeans,
+                  "X_train": self.X_train,
+                  "features": [self.x_axis_dropdown.value, self.y_axis_dropdown.value]  
+              } 
+              with open(e.path, "wb") as f:
+                  pickle.dump(data_to_save, f)  
+              self.show_snackbar(f"✅ Modelo guardado en: {e.path}")
+              self.page.update()    
+          except Exception as ex:
+              self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")   
+          self.page.update()
+
+
+
 
     def calculate_optimal_k(self, e):
         try:

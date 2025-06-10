@@ -1,5 +1,6 @@
 import flet as ft
 from interface.Data_Clean import DataCleanWindow
+from interface.Online_Window import OnlineWindow
 
 
 
@@ -10,8 +11,8 @@ class MainApp(ft.Column):
         self.page = page
         self.logo = ft.Image(
             src = "extras/logo.png",
-            width = 150,
-            height = 150,
+            width = 250,
+            height = 200,
             fit = ft.ImageFit.CONTAIN
         )
 
@@ -86,9 +87,9 @@ class MainApp(ft.Column):
         
 
     def open_online_window(self, e):
-        self.page.snack_bar = ft.SnackBar(ft.Text("Modo Online aún no implementado"), bgcolor = "red")
-        self.page.snack_bar.open = True
-        self.page.update()
+        self.page.clean()
+        online_window = OnlineWindow(self.page)
+        self.page.add(online_window)
         
     
     def open_offline_window_clean_data(self, e):
