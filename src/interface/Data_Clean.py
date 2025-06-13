@@ -24,7 +24,7 @@ class DataCleanWindow(ft.Column):
         
         self.back_button = ft.FloatingActionButton(
             icon = "arrow_back",
-            bgcolor = ft.Colors.BLUE_700,
+            bgcolor = ft.Colors.GREY_900,
             shape = ft.CircleBorder(),
             autofocus = True,
             tooltip = "Volver al inicio",
@@ -104,7 +104,7 @@ class DataCleanWindow(ft.Column):
                                     ),
                                     ft.Text("Preprocesamiento de Datos", size = 18, weight = "bold"),
                                 ], 
-                                alignment="spaceBetween"
+                                alignment = "spaceBetween"
                                 ),
                                 
                                 ft.Divider(height = 20),

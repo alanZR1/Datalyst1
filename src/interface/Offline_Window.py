@@ -14,8 +14,8 @@ class OfflineWindow(ft.Column):
             self.page = page
             self.df = cleaned_df
             self.kmeans = None
-            self.k_input = ft.TextField(label = "Número de clusters", value = "2")
-            self.n_init_input = ft.TextField(label = "Número de iteraciones", value = "10")
+            self.k_input = ft.TextField(label = "Número de clusters", value = "0")
+            self.n_init_input = ft.TextField(label = "Número de iteraciones", value = "0")
 
             numeric_columns = self.df.select_dtypes(include = ["number"]).columns.tolist()
             dropdown_options = [ft.dropdown.Option(col) for col in numeric_columns]
@@ -102,7 +102,7 @@ class OfflineWindow(ft.Column):
             
             self.back_button = ft.FloatingActionButton(
                 icon = "Arrow_Back",
-                bgcolor = ft.Colors.BLUE_700,
+                bgcolor = ft.Colors.GREY_900,
                 shape = ft.CircleBorder(),
                 autofocus = True,
                 tooltip = "Volver",
@@ -118,11 +118,11 @@ class OfflineWindow(ft.Column):
                         ft.Column([
                                 ft.Row([
                                     ft.Container(
-                                        content=self.back_button,
-                                        alignment=ft.alignment.center_right,
-                                        expand=True
+                                        content = self.back_button,
+                                        alignment = ft.alignment.center_right,
+                                        expand = True
                                     ),
-                                    ft.Text("Preprocesamiento de Datos", size=18, weight="bold"),
+                                    ft.Text("Preprocesamiento de Datos", size = 18, weight = "bold"),
                                     ],
                                        
                                     alignment = "spaceBetween"
@@ -249,20 +249,26 @@ class OfflineWindow(ft.Column):
 
 
     def on_save_model(self, e: ft.FilePickerResultEvent):
-      if e.path:
-          try:
-              data_to_save = {
-                  "model": self.kmeans,
-                  "X_train": self.X_train,
-                  "features": [self.x_axis_dropdown.value, self.y_axis_dropdown.value]  
-              } 
-              with open(e.path, "wb") as f:
-                  pickle.dump(data_to_save, f)  
-              self.show_snackbar(f"✅ Modelo guardado en: {e.path}")
-              self.page.update()    
-          except Exception as ex:
-              self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")   
-          self.page.update()
+        if e.path:
+            try:
+                data_to_save = {
+                     "model": self.kmeans,
+                     "training_data": self.df,
+                     "features": {
+                        "x_col": self.x_axis_dropdown.value,
+                        "y_col": self.y_axis_dropdown.value
+                    }
+                } 
+                with open(e.path, "wb") as f:
+                    pickle.dump(data_to_save, f, protocol=pickle.HIGHEST_PROTOCOL) 
+
+                self.show_snackbar(f"✅ Modelo guardado en: {e.path}")
+                self.page.update()    
+
+            except Exception as ex:
+                self.show_snackbar(f"Error al guardar el modelo: {str(ex)}", "red")   
+            
+            self.page.update()
 
 
 
