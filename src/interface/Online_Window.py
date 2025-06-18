@@ -147,7 +147,7 @@ class OnlineWindow(ft.Column):
             if not all(key in saved for key in required_keys):
                 raise ValueError("El archivo no tiene el formato esperado")
             
-                    # Debug: Verifica los datos cargados
+                   
             print(f"Columnas en datos: {self.data.columns}")
             print(f"X_col: {self.x_col}, Y_col: {self.y_col}")
             print(f"Centroides: {self.model.cluster_centers_}")
@@ -167,15 +167,15 @@ class OnlineWindow(ft.Column):
 
         """Actualiza el gráfico con los datos cargados"""
         try:
-            # Preparar datos
+            
             df = self.data
             x_col = self.x_col
             y_col = self.y_col
 
-            # Crear figura
+            
             plt.figure(figsize = (10, 6))
 
-            # 1. Graficar puntos de entrenamiento
+            
             plt.scatter(
                 df[x_col], df[y_col],
                 c = self.model.predict(df[[x_col, y_col]]),
@@ -184,7 +184,7 @@ class OnlineWindow(ft.Column):
                 label = "Datos históricos"
             )
 
-            # 2. Graficar centroides
+            
             centers = self.model.cluster_centers_
             plt.scatter(
                 centers[:, 0], centers[:, 1],
@@ -192,19 +192,18 @@ class OnlineWindow(ft.Column):
                 label = "Centroides"
             )
 
-            # 3. Configuración del gráfico
+            
             plt.xlabel(x_col)
             plt.ylabel(y_col)
             plt.title("Clusters y Centroides\n(Modo Online)")
             plt.legend()
             plt.grid(True)
 
-            # Convertir a imagen
             buf = io.BytesIO()
             plt.savefig(buf, format = "png", dpi = 120, bbox_inches = "tight")
             plt.close()
 
-            # Actualizar UI
+            
             self.cluster_image.src_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
             
             self.page.update()
